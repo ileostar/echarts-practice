@@ -23,7 +23,7 @@ const props = defineProps({
         {{ props.title }}
       </h1>
     </div>
-    <div h-full w-full p="0.5">
+    <div h-full w-full p="0.3">
       <slot />
     </div>
   </div>

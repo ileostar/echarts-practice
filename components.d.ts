@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     BaseCard: typeof import('./src/components/BaseCard.vue')['default']
     BaseCharts: typeof import('./src/components/BaseCharts.vue')['default']
+    BaseTable: typeof import('./src/components/BaseTable.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     PoliceList: typeof import('./src/components/PoliceList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

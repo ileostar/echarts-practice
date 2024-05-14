@@ -130,192 +130,122 @@ function initBarChart() {
 const reBarChart = ref()
 function initReBarChart() {
   const mycharts = echarts.init(reBarChart.value)
-  const hexToRgba = (hex: string, opacity: number) => {
-    let rgbaColor = ''
-    const reg = /^#[\da-f]{6}$/i
-    if (reg.test(hex)) {
-      rgbaColor = `rgba(${Number.parseInt(`0x${hex.slice(1, 3)}`)},${Number.parseInt(
-      `0x${hex.slice(3, 5)}`,
-    )},${Number.parseInt(`0x${hex.slice(5, 7)}`)},${opacity})`
-    }
-    return rgbaColor
-  }
-
-  // 数据整理
-  const xData = ['模型NAME1', '模型NAME2', '模型NAME3', '模型NAME4']
-  const yData = [4757, 3254, 2454, 2011, 1654]
-  const max = Math.max(...yData)
-  const labelColor = ['#FD5360', '#FF962B', '#FFAA00']
-  const emptyData = yData.map((v, i) => {
-    const color = i > 2 ? '#2C6CD1' : labelColor[i]
-    const item = {
-      value: max,
-      label: {
-        formatter: `{a|${v}}`,
-        position: 'right',
-        distance: 20,
-        rich: {
-          a: {
-            color,
-            borderColor: color,
-            borderWidth: 1,
-            borderType: 'dashed',
-            padding: [0, 0, 2, 0],
-            width: 60,
-            height: 18,
-            align: 'center',
-            verticalAlign: 'middle',
-            backgroundColor: hexToRgba(color, 0.05),
-          },
-        },
-
-      },
-    }
-    return item
-  })
-  const xDataFormat = xData.map((v, i) => {
-    const color = i > 2 ? '#2C6CD1' : labelColor[i]
-    const item = {
-      value: v,
-      textStyle: {
-        rich: {
-          a: {
-            color,
-            width: 20,
-            height: 20,
-            align: 'center',
-            verticalAlign: 'middle',
-            backgroundColor: '#fff',
-            borderRadius: 10,
-            borderColor: hexToRgba(color, 0.2),
-            borderWidth: 1,
-            shadowColor: hexToRgba(color, 0.1),
-            shadowBlur: 5,
-          },
-          b: {
-            padding: [0, 5],
-          },
-          value: {
-            color: '#2C6CD1',
-          },
-        },
-      },
-    }
-    return item
-  })
-  xData.reverse()
-  xDataFormat.reverse()
-  yData.reverse()
-  emptyData.reverse()
+  const proName = ['初始', '最高', '最低', '当前']
 
   const option = {
     grid: {
-      top: '5%',
-      left: '1%',
-      right: '15%',
-      bottom: '3%',
+      left: '3%',
+      right: '5%',
+      bottom: '10%',
+      top: '15%',
       containLabel: true,
     },
-    xAxis: [{
-      type: 'value',
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'none',
+      },
+      formatter(params: {
+        [x: string]: string
+        value: string
+      }[]) {
+        return `${params[0].name} : ${params[0].value}`
+      },
+    },
+    legend: {
+      data: ['地热平衡', '节能环保'],
+      icon: 'circle',
+      x: 'center',
+      top: 0,
+      textStyle: {
+        color: '#fff',
+      },
+    },
+    xAxis: {
+      show: true,
       splitLine: {
         show: true,
-        lineStyle: {
-          width: 0,
-          color: '#C7DEFF',
+        textStyle: {
+          color: '#333',
         },
-      },
-      max(value: { max: any }) {
-        return value.max
+        lineStyle: {
+          color: '#8c8c8c',
+          type: 'dashed',
+        },
       },
       axisLine: {
-        lineStyle: {
-          width: 2,
-          color: '#C7DEFF',
+        show: true,
+        textStyle: {
+          color: '#333',
         },
-      },
-      axisLabel: {
-        color: '#2C6CD1',
+        lineStyle: {
+          color: '#8c8c8c',
+          type: 'dashed',
+        },
       },
       axisTick: {
         show: false,
       },
-    }],
+      axisLabel: {
+        show: true,
+      },
+      type: 'value',
+    },
     yAxis: [{
       type: 'category',
-      name: '',
-      axisTick: {
-        show: false,
-      },
-      splitLine: {
-        show: false,
-      },
-      axisLine: {
+      inverse: true,
+      boundaryGap: true,
+      axisLabel: {
+        show: true,
         lineStyle: {
-          width: 2,
-          color: '#C7DEFF',
+          color: '#f2f2f2',
         },
-      },
-      axisLabel: {
-        formatter(value: string) {
-          // return '{a|' + value.substr(value.length - 1) + '}{b|}{value|' + value + '}'
-          return ` {b|}{value|${value}}`
-        },
-      },
-      data: xDataFormat,
-    }, {
-      type: 'category',
-      name: '',
-      axisTick: {
-        show: false,
       },
       splitLine: {
         show: false,
       },
-      axisLabel: {
+      axisTick: {
         show: false,
       },
       axisLine: {
         show: false,
       },
-      data: xData,
+      data: proName,
     }],
     series: [{
+      name: '地热平衡',
       type: 'bar',
-      barWidth: 40,
-      yAxisIndex: 1,
-      itemStyle: {
-        normal: {
-          // barBorderRadius: [0, 6, 6, 0],
-          color: 'rgba(225,225,225,0.4)',
-        },
-        emphasis: {
-          // barBorderRadius: [0, 6, 6, 0],
-          color: 'rgba(225,225,225,0.4)',
-        },
-      },
-      label: {
-        show: true,
-        position: 'right',
-      },
-      data: emptyData,
-    }, {
-      type: 'bar',
-      barWidth: 40,
       zlevel: 1,
       itemStyle: {
         normal: {
-          // barBorderRadius: [0, 6, 6, 0],
-          color: new echarts.graphic.LinearGradient(0, 0, 1, 1, [{
+          color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
             offset: 0,
-            color: '#3B6ECA',
+            color: 'rgb(57,89,255,1)',
           }, {
             offset: 1,
-            color: '#C2E0FC',
-          }], false),
+            color: 'rgb(46,200,207,1)',
+          }]),
         },
       },
-      data: yData,
+      barWidth: 8,
+      data: [88, 48, 150, 130],
+    }, {
+      name: '节能环保',
+      type: 'bar',
+      zlevel: 1,
+      itemStyle: {
+        normal: {
+          color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+            offset: 0,
+            color: '#1AB2DC',
+          }, {
+            offset: 1,
+            color: '#1CCC9D',
+          }]),
+        },
+      },
+      barWidth: 8,
+      data: [32, 63, 100, 110],
     }],
   }
   mycharts.setOption(option)

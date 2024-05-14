@@ -168,10 +168,12 @@ function initPieChart() {
           show: false,
         },
         data: [
-          { value: 125, name: '长期空置' },
-          { value: 280, name: '长期未外出' },
-          { value: 484, name: '小孩独自出门超时' },
-          { value: 420, name: '老人独自出门超时' },
+          { value: 125, name: '天棚主机' },
+          { value: 280, name: '天棚水泵' },
+          { value: 125, name: '新风主机' },
+          { value: 125, name: '新风水系' },
+          { value: 484, name: '地源水泵' },
+          { value: 420, name: '冷却水泵' },
         ],
       },
     ],
@@ -185,7 +187,7 @@ function initBarChart() {
   const myChart = echarts.init(barChart.value)
   const option = {
     title: {
-      text: '近一周访客超市楼栋分布',
+      text: '元/天',
       x: '5%',
       textStyle: {
         fontWeight: 'normal',
@@ -381,192 +383,122 @@ function initLineChart() {
 const reBarChart = ref()
 function initReBarChart() {
   const mycharts = echarts.init(reBarChart.value)
-  const hexToRgba = (hex: string, opacity: number) => {
-    let rgbaColor = ''
-    const reg = /^#[\da-f]{6}$/i
-    if (reg.test(hex)) {
-      rgbaColor = `rgba(${Number.parseInt(`0x${hex.slice(1, 3)}`)},${Number.parseInt(
-      `0x${hex.slice(3, 5)}`,
-    )},${Number.parseInt(`0x${hex.slice(5, 7)}`)},${opacity})`
-    }
-    return rgbaColor
-  }
-
-  // 数据整理
-  const xData = ['模型NAME1', '模型NAME2', '模型NAME3', '模型NAME4']
-  const yData = [4757, 3254, 2454, 2011, 1654]
-  const max = Math.max(...yData)
-  const labelColor = ['#FD5360', '#FF962B', '#FFAA00']
-  const emptyData = yData.map((v, i) => {
-    const color = i > 2 ? '#2C6CD1' : labelColor[i]
-    const item = {
-      value: max,
-      label: {
-        formatter: `{a|${v}}`,
-        position: 'right',
-        distance: 20,
-        rich: {
-          a: {
-            color,
-            borderColor: color,
-            borderWidth: 1,
-            borderType: 'dashed',
-            padding: [0, 0, 2, 0],
-            width: 60,
-            height: 18,
-            align: 'center',
-            verticalAlign: 'middle',
-            backgroundColor: hexToRgba(color, 0.05),
-          },
-        },
-
-      },
-    }
-    return item
-  })
-  const xDataFormat = xData.map((v, i) => {
-    const color = i > 2 ? '#2C6CD1' : labelColor[i]
-    const item = {
-      value: v,
-      textStyle: {
-        rich: {
-          a: {
-            color,
-            width: 20,
-            height: 20,
-            align: 'center',
-            verticalAlign: 'middle',
-            backgroundColor: '#fff',
-            borderRadius: 10,
-            borderColor: hexToRgba(color, 0.2),
-            borderWidth: 1,
-            shadowColor: hexToRgba(color, 0.1),
-            shadowBlur: 5,
-          },
-          b: {
-            padding: [0, 5],
-          },
-          value: {
-            color: '#2C6CD1',
-          },
-        },
-      },
-    }
-    return item
-  })
-  xData.reverse()
-  xDataFormat.reverse()
-  yData.reverse()
-  emptyData.reverse()
+  const proName = ['初始', '最高', '最低', '当前']
 
   const option = {
     grid: {
-      top: '5%',
-      left: '1%',
-      right: '15%',
-      bottom: '3%',
+      left: '3%',
+      right: '5%',
+      bottom: '10%',
+      top: '15%',
       containLabel: true,
     },
-    xAxis: [{
-      type: 'value',
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'none',
+      },
+      formatter(params: {
+        [x: string]: string
+        value: string
+      }[]) {
+        return `${params[0].name} : ${params[0].value}`
+      },
+    },
+    legend: {
+      data: ['地热平衡', '节能环保'],
+      icon: 'circle',
+      x: 'center',
+      top: 0,
+      textStyle: {
+        color: '#fff',
+      },
+    },
+    xAxis: {
+      show: true,
       splitLine: {
         show: true,
-        lineStyle: {
-          width: 0,
-          color: '#C7DEFF',
+        textStyle: {
+          color: '#333',
         },
-      },
-      max(value: { max: any }) {
-        return value.max
+        lineStyle: {
+          color: '#8c8c8c',
+          type: 'dashed',
+        },
       },
       axisLine: {
-        lineStyle: {
-          width: 2,
-          color: '#C7DEFF',
+        show: true,
+        textStyle: {
+          color: '#333',
         },
-      },
-      axisLabel: {
-        color: '#2C6CD1',
+        lineStyle: {
+          color: '#8c8c8c',
+          type: 'dashed',
+        },
       },
       axisTick: {
         show: false,
       },
-    }],
+      axisLabel: {
+        show: true,
+      },
+      type: 'value',
+    },
     yAxis: [{
       type: 'category',
-      name: '',
-      axisTick: {
-        show: false,
-      },
-      splitLine: {
-        show: false,
-      },
-      axisLine: {
+      inverse: true,
+      boundaryGap: true,
+      axisLabel: {
+        show: true,
         lineStyle: {
-          width: 2,
-          color: '#C7DEFF',
+          color: '#f2f2f2',
         },
-      },
-      axisLabel: {
-        formatter(value: string) {
-          // return '{a|' + value.substr(value.length - 1) + '}{b|}{value|' + value + '}'
-          return ` {b|}{value|${value}}`
-        },
-      },
-      data: xDataFormat,
-    }, {
-      type: 'category',
-      name: '',
-      axisTick: {
-        show: false,
       },
       splitLine: {
         show: false,
       },
-      axisLabel: {
+      axisTick: {
         show: false,
       },
       axisLine: {
         show: false,
       },
-      data: xData,
+      data: proName,
     }],
     series: [{
+      name: '地热平衡',
       type: 'bar',
-      barWidth: 40,
-      yAxisIndex: 1,
-      itemStyle: {
-        normal: {
-          // barBorderRadius: [0, 6, 6, 0],
-          color: 'rgba(225,225,225,0.4)',
-        },
-        emphasis: {
-          // barBorderRadius: [0, 6, 6, 0],
-          color: 'rgba(225,225,225,0.4)',
-        },
-      },
-      label: {
-        show: true,
-        position: 'right',
-      },
-      data: emptyData,
-    }, {
-      type: 'bar',
-      barWidth: 40,
       zlevel: 1,
       itemStyle: {
         normal: {
-          // barBorderRadius: [0, 6, 6, 0],
-          color: new echarts.graphic.LinearGradient(0, 0, 1, 1, [{
+          color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
             offset: 0,
-            color: '#3B6ECA',
+            color: 'rgb(57,89,255,1)',
           }, {
             offset: 1,
-            color: '#C2E0FC',
-          }], false),
+            color: 'rgb(46,200,207,1)',
+          }]),
         },
       },
-      data: yData,
+      barWidth: 8,
+      data: [88, 48, 150, 130],
+    }, {
+      name: '节能环保',
+      type: 'bar',
+      zlevel: 1,
+      itemStyle: {
+        normal: {
+          color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+            offset: 0,
+            color: '#1AB2DC',
+          }, {
+            offset: 1,
+            color: '#1CCC9D',
+          }]),
+        },
+      },
+      barWidth: 8,
+      data: [32, 63, 100, 110],
     }],
   }
   mycharts.setOption(option)
@@ -606,38 +538,39 @@ onMounted(() => {
   <main>
     <TransitionLeftBox>
       <div class="left" fixed left-0 h-full w-80 p1 pt8>
-        <BaseCard title="当代效能标识" h-35>
-          <div h-full flex items-center justify-between>
-            <div ref="cPieChart" h-full w-full mt="-1" />
-            <div flex="~ col 1" items-start gap-2 text-2 color-white>
-              <div flex gap-2>
-                <p>覆盖区域显示</p>
-                <label class="relative inline-flex cursor-pointer items-center">
-                  <input class="peer sr-only" value="" type="checkbox">
-                  <div class="peer h-3 w-6 rounded-full bg-slate-700 outline-none duration-100 after:absolute after:h-3 after:w-3 after:flex after:items-center after:justify-center after:rounded-full after:bg-white after:text-sky-800 after:font-bold after:outline-none peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-500 after:duration-500 after:content-[''] peer-checked:after:translate-x-3 peer-checked:after:border-white peer-checked:after:content-['']" />
-                </label>
-              </div>
-              <div flex="~ col gap1">
-                <p>人脸识别区域：32%</p>
-                <div h1 w-full bg-transparent>
-                  <div w-10 bg-gray>
-                    32%
+        <BaseCard title="当代效能标识" h-40>
+          <div flex="~ col" h-full w-full gap1>
+            <div flex justify-between gap-1 text-3 color-white>
+              <span h-4 w-7>低</span>
+              <span v-for="i in 5" :key="i" h-4 w-7 border="1 solid blue" />
+              <span h-4 w-7>高</span>
+              <span h-4 w-7 bg-blue> 一级 </span>
+            </div>
+            <div flex="~ 1" h-30 w-full items-center justify-between>
+              <div ref="cPieChart" h-full flex-1 mt="-1" />
+              <div flex="~ col 1" items-start gap-2 text-2 color-white>
+                <div flex="~ col gap1">
+                  <p>人脸识别区域：32%</p>
+                  <div h1 w-full bg-transparent>
+                    <div w-10 bg-gray>
+                      32%
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div mt1 flex="~ col gap1">
-                <p>可控摄像头区域：53.685%</p>
-                <div h1 w-full bg-transparent>
-                  <div w-18 bg-gray>
-                    53.685%
+                <div mt1 flex="~ col gap1">
+                  <p>可控摄像头区域：53.685%</p>
+                  <div h1 w-full bg-transparent>
+                    <div w-18 bg-gray>
+                      53.685%
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </BaseCard>
-        <BaseCard title="系统费用统计" h-50>
-          <div ref="barChart" h-40 w-full mt="-1" />
+        <BaseCard title="系统费用统计" h-40>
+          <div ref="barChart" h-full w-full />
         </BaseCard>
         <BaseCard title="各类型费用占比" h-40>
           <div ref="pieChart" h-full w-full />
@@ -650,7 +583,7 @@ onMounted(() => {
     <TransitionRightBox>
       <div class="right" fixed right-0 h-full w-80 p2 pt8>
         <BaseCard title="能源数据概况">
-          <ul grid grid-cols-2 gap1 color-white>
+          <ul grid grid-cols-2 gap="0.5" color-white>
             <li v-for="i in energyInfos" :key="i.name">
               <h2 text="2.5">
                 {{ i.name }}
@@ -662,10 +595,10 @@ onMounted(() => {
           </ul>
         </BaseCard>
         <BaseCard title="能源数据概况">
-          <div ref="lineChart" h-40 w-full />
+          <div ref="lineChart" h-35 w-full />
         </BaseCard>
         <BaseCard title="系统效能统计">
-          能源数据概况
+          <BaseTable />
         </BaseCard>
       </div>
     </TransitionRightBox>
